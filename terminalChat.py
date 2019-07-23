@@ -22,7 +22,7 @@ class terminalChat():
     }
     chatrooms = ['it', 'summer']
 
-    #точка входа в наше приложение
+    #точка входа в приложение
     def main(self):
         self.login()
         self.selectChatroom()
@@ -79,7 +79,6 @@ class terminalChat():
     def getInput(self):
         message = input(colored("{}: " .format(self.user), "green")
         self.pusher.trigger(self.chatroom, u'newmessage', {"user": self.user, "message": message})
-
 
 if __name__ == "__main__":
     terminalChat().main()
