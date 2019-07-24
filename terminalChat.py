@@ -7,13 +7,16 @@ import pysher
 from dotenv import load_dotenv
 import os
 import json
-import shutil
+
+from easterEggs import *
+from size import *
 
 # NOTE: Добавить к сообщения время отправки
 
 # Функция предварительной очистки консоли
 def cls():
     os.system('cls' if os.name=='nt' else 'clear')
+cls()
 
 load_dotenv(dotenv_path='.env')
 
@@ -27,9 +30,7 @@ class terminalChat():
         "egor": "00000",
         "user": "user"
     }
-    chatrooms = ['Somechat']
-
-
+    chatrooms = ['Somechat', 'Another', 'Some']
 
     #точка входа в приложение
     def main(self):
@@ -40,13 +41,9 @@ class terminalChat():
 
     #функция входа в систему
     def login(self):
-        cls()
-        lines = ['String right here', 'And here', 'Here', 'A-a-a-and here']
-        width = shutil.get_terminal_size().columns
-        position = (width - max(map(len, lines))) // 2
-        for line in lines:
-            print(line.center(width))
         # Ввод данных
+        eggIntro()
+        intro()
         username = input("Username: ")
         password = getpass.getpass("Enter %s's Password: " % username)
         if username in self.users:
@@ -61,14 +58,21 @@ class terminalChat():
 
     #Выбор чата из предоставленного списка
     def selectChatroom(self):
-        print(colored("Available chat's are %s" % str(self.chatrooms), "blue"))
-        chatroom = input(colored("Please select a chat: ", "green"))
+        cls()
+        intro()
+        i = 0
+        for chat in self.chatrooms:
+            i += 1
+            print([i], colored(chat, "blue").center(10))
+        chatroom = input(colored("\nSelect a chat: ", "green"))
         if chatroom in self.chatrooms:
             self.chatroom = chatroom
             self.initPusher()
         else:
             print(colored("No such chat in our list", "red"))
             self.selectChatroom()
+        cls()
+        print("\x1b[6;30;42m", chatroom, "\x1b[0m\n")
 
     #Функция инициализации
     def initPusher(self):
@@ -83,6 +87,7 @@ class terminalChat():
     def connectHandler(self, data):
         self.channel = self.clientPusher.subscribe(self.chatroom)
         self.channel.bind('newmessage', self.pusherCallback)
+
 
     #когда происходит новое событие
     def pusherCallback(self, message):
