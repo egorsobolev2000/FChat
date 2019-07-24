@@ -7,6 +7,13 @@ import pysher
 from dotenv import load_dotenv
 import os
 import json
+import shutil
+
+# NOTE: Добавить к сообщения время отправки
+
+# Функция предварительной очистки консоли
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')
 
 load_dotenv(dotenv_path='.env')
 
@@ -22,6 +29,8 @@ class terminalChat():
     }
     chatrooms = ['Somechat']
 
+
+
     #точка входа в приложение
     def main(self):
         self.login()
@@ -31,8 +40,15 @@ class terminalChat():
 
     #функция входа в систему
     def login(self):
-        username = input("Please enter your username: ")
-        password = getpass.getpass("Please enter %s's Password: " % username)
+        cls()
+        lines = ['String right here', 'And here', 'Here', 'A-a-a-and here']
+        width = shutil.get_terminal_size().columns
+        position = (width - max(map(len, lines))) // 2
+        for line in lines:
+            print(line.center(width))
+        # Ввод данных
+        username = input("Username: ")
+        password = getpass.getpass("Enter %s's Password: " % username)
         if username in self.users:
             if self.users[username] == password:
                 self.user = username
@@ -77,7 +93,7 @@ class terminalChat():
 
     # Функция для получения текущего сообщения
     def getInput(self):
-        message = input(colored("{}: ".format(self.user), "green"))
+        message = input(colored("\x1b[1;31m{}\x1b[0m: ".format(self.user), "green"))
         self.pusher.trigger(self.chatroom, u'newmessage', {"user": self.user, "message": message})
 
 
