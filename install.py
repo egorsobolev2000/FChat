@@ -3,7 +3,6 @@
 import sys
 import os
 
-
 def prYellow(prt): print("\033[93m {}\033[00m" .format(prt))
 
 if sys.version_info<(3,5,0):
