@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-clear
 import getpass
 import pyautogui
+from datetime import datetime
 from termcolor import colored
 from pusher import Pusher
 import pysher
@@ -19,6 +20,7 @@ def cls():
 cls()
 
 load_dotenv(dotenv_path='.env')
+time = datetime.now().strftime("%H:%M")
 screen_code = "\033[1A\033[2K"
 
 
@@ -46,7 +48,7 @@ class terminalChat():
         # Ввод данных
         eggIntro()
         intro()
-        username = input("Username: ")
+        username = input("Login: ")
         password = getpass.getpass("Enter %s's Password: " % username)
         if username in self.users:
             cls()
@@ -78,7 +80,7 @@ class terminalChat():
             print(colored("No such chat in our list", "red"))
             self.selectChatroom()
         cls()
-        print("\x1b[6;30;42m","Chat [ {} ]\x1b[0m\n".format(chatroom))
+        print("\x1b[6;30;42m","Chat [ {} ] \x1b[0m -  Press \033[93mESC\033[00m to go back \n".format(chatroom))
 
     #Функция инициализации
     def initPusher(self):
@@ -100,8 +102,10 @@ class terminalChat():
         if message['user'] != self.user:
             if message['user'] != self.user:
                 sys.stdout.write('\033[1A')
-                print("\n\x1b[1;34m{}\x1b[0m: {}".format(message['user'], message['message']))
-            print("\x1b[1;31m{}\x1b[0m: ".format(self.user))
+                # Вывод на экран полученного сообщения
+                print("\n{} - \x1b[1;34m{}\x1b[0m: {}".format(time, message['user'], message['message']))
+
+            print("{} - \x1b[1;31m{}\x1b[0m: ".format(time, self.user))
             sys.stdout.write('\n\033[1A')
             #pyautogui.press('esc')
             if message['user'] != self.user:
@@ -109,13 +113,13 @@ class terminalChat():
 
     # Функция для получения текущего сообщения
     def getInput(self):
-        message = input("\x1b[1;31m{}\x1b[0m: ".format(self.user))
+        message = input("{} - \x1b[1;31m{}\x1b[0m: ".format(time, self.user))
         if message == "":
             sys.stdout.write(screen_code)
         elif message != "":
             self.pusher.trigger(self.chatroom, u'newmessage', {"user": self.user, "message": message})
         else:
-            print(colored("Something went wrong", 'red'))
+            assert False, (colored("Something went wrong", 'red'))
 
 
 if __name__ == "__main__":
